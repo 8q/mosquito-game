@@ -317,6 +317,11 @@ Prefab:
       propertyPath: span.min
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 114035702500278724, guid: fbc32d093ff44f84686859c50d15008f,
+        type: 2}
+      propertyPath: span.max
+      value: 1.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fbc32d093ff44f84686859c50d15008f, type: 2}
   m_IsPrefabParent: 0
