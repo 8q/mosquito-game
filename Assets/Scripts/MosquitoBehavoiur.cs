@@ -8,6 +8,9 @@ using System.Linq;
 public class MosquitoBehavoiur : MonoBehaviour
 {
 
+    [SerializeField]
+    private float speed = 0.005f;
+
     void Start()
     {
         // ベジェ曲線用の点配列を用意
@@ -17,7 +20,7 @@ public class MosquitoBehavoiur : MonoBehaviour
 
         // ベジェ曲線に沿って蚊を移動させる
         this.UpdateAsObservable()
-            .Select(_ => 0.005f) // フレームあたりのtの変化量
+            .Select(_ => speed) // フレームあたりのtの変化量
             .Scan(0.0f, (acc, cur) => acc + cur)
             .TakeWhile(t => t <= 1.0f) // tが1を超えた時点てonCompletedを流す
             .Subscribe(t =>
@@ -31,6 +34,24 @@ public class MosquitoBehavoiur : MonoBehaviour
             {
                 // onCompletedで蚊を消す
                 Destroy(gameObject);
+            })
+            .AddTo(gameObject);
+
+
+        var audioSource = GetComponent<AudioSource>();
+        var center = new Vector2(0.5f, 0.5f);
+
+        // 中心に近いほど「プーン」の音量が大きくなる
+        this.UpdateAsObservable()
+            .Select(_ =>
+            {
+                var p = Camera.main.WorldToViewportPoint(transform.position);
+                return new Vector2(p.x, p.y);
+            })
+            .Select(p => Mathf.Clamp(1 - 2 * Vector2.Distance(center, p), 0f, 1f))
+            .Subscribe(t =>
+            {
+                audioSource.volume = t;
             })
             .AddTo(gameObject);
     }
