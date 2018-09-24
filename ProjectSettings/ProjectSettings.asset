@@ -644,7 +644,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: a5ddb0a3-83f0-410c-85c7-878a64763523
   projectName: mosquito-revival
   organizationId: shira7867

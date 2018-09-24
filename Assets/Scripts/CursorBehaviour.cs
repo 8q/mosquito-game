@@ -13,6 +13,9 @@ public class CursorBehaviour : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        // StageManagerのインスタンス取得
+        var stageManager = StageManager.Instance;
+
         // デフォルトのカーソルを消す
         Cursor.visible = false;
 
@@ -26,24 +29,30 @@ public class CursorBehaviour : MonoBehaviour
             })
             .AddTo(gameObject);
 
-        // 左クリックしたときにする動作
-        var mouseDown = this.UpdateAsObservable()
-            .Where(_ => Input.GetMouseButtonDown(0));
-
-        // 「パン」を生成する。
-        mouseDown
+        // 左クリックしたときにMouseClickイベントを流す
+        this.UpdateAsObservable()
+            .Where(_ => Input.GetMouseButtonDown(0))
             .Subscribe(_ =>
             {
-                Instantiate(pan, transform.position, pan.transform.rotation);
+                stageManager.MouseClick.OnNext(transform.position);
+            });
+
+        // 「パン」を生成する。
+        stageManager.MouseClick
+            .Subscribe(pos =>
+            {
+                Instantiate(pan, pos, pan.transform.rotation);
             })
             .AddTo(gameObject);
 
         // クリックしたときにカーソルの下に蚊がいたら蚊を消す
-        mouseDown
-            .Select(_ => Physics2D.OverlapPoint(transform.position))
+        // 蚊を叩いたときにMosquitoHitイベントを流す
+        stageManager.MouseClick
+            .Select(pos => Physics2D.OverlapPoint(pos))
             .Where(collider => collider != null && collider.gameObject.tag == "Mosquito")
             .Subscribe(collider =>
             {
+                stageManager.MosquitoHit.OnNext(Unit.Default);
                 Destroy(collider.gameObject);
             })
             .AddTo(gameObject);
