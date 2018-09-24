@@ -7,9 +7,6 @@ using UniRx.Triggers;
 public class CursorBehaviour : MonoBehaviour
 {
 
-    [SerializeField]
-    private GameObject pan;
-
     // Use this for initialization
     void Start()
     {
@@ -36,14 +33,6 @@ public class CursorBehaviour : MonoBehaviour
             {
                 stageManager.MouseClick.OnNext(transform.position);
             });
-
-        // 「パン」を生成する。
-        stageManager.MouseClick
-            .Subscribe(pos =>
-            {
-                Instantiate(pan, pos, pan.transform.rotation);
-            })
-            .AddTo(gameObject);
 
         // クリックしたときにカーソルの下に蚊がいたら蚊を消す
         // 蚊を叩いたときにMosquitoHitイベントを流す
