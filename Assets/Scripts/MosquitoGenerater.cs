@@ -15,7 +15,11 @@ public class MosquitoGenerater : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        // StageManagerのインスタンス取得
+        var stageManager = StageManager.Instance;
+
         Observable.FromCoroutine<Unit>(observer => RandomIntervalCoroutine(observer))
+            .Where(_ => stageManager.StageState.Value == StageState.Playing)
             .Subscribe(_ =>
             {
                 Instantiate(mosquito);

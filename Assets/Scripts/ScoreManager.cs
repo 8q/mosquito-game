@@ -25,14 +25,28 @@ public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
         // StageManagerのインスタンスを取得
         var stageManager = StageManager.Instance;
 
+        // 初期化中
+        stageManager.StageState
+            .Where(s => s == StageState.Initializing)
+            .Subscribe(s =>
+            {
+                ClickCount.Value = 0;
+                HitCount.Value = 0;
+                HitRate.Value = 0f;
+            })
+            .AddTo(gameObject);
+
+        // マウスがクリックされたらクリックカウントを増やす
         stageManager.MouseClick
             .Subscribe(p => ClickCount.Value++)
             .AddTo(gameObject);
 
+        // 蚊に当たったらヒットカウントを増やす
         stageManager.MosquitoHit
             .Subscribe(_ => HitCount.Value++)
             .AddTo(gameObject);
 
+        // クリックカウントとヒットカウントが更新されたら、ヒットレートを更新する
         Observable.Merge(ClickCount).Merge(HitCount)
             .Where(_ => ClickCount.Value > 0)
             .Subscribe(_ => HitRate.Value = 100.0f * HitCount.Value / ClickCount.Value)

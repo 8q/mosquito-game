@@ -13,11 +13,7 @@ public class StageManager : SingletonMonoBehaviour<StageManager>
     private Subject<Unit> _mosquitoHit = new Subject<Unit>();
     public Subject<Unit> MosquitoHit { get { return _mosquitoHit; } }
 
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
+    private ReactiveProperty<StageState> _stageState = new ReactiveProperty<StageState>(global::StageState.Initializing);
+    public ReactiveProperty<StageState> StageState { get { return _stageState; } }
 
 }

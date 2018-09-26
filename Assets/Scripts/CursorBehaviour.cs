@@ -26,9 +26,10 @@ public class CursorBehaviour : MonoBehaviour
             })
             .AddTo(gameObject);
 
-        // 画面内を左クリックしたときにMouseClickイベントを流す
+        // プレー中に画面内を左クリックしたときにMouseClickイベントを流す
         this.UpdateAsObservable()
             .Where(_ => Input.GetMouseButtonDown(0))
+            .Where(_ => stageManager.StageState.Value == StageState.Playing)
             .Select(_ => transform.position)
             .Where(p =>
             {
@@ -38,10 +39,10 @@ public class CursorBehaviour : MonoBehaviour
             .Subscribe(p => stageManager.MouseClick.OnNext(p))
             .AddTo(gameObject);
 
-        // クリックしたときにカーソルの下に蚊がいたら蚊を消す
+        // クリックイベントが流れてきたときにカーソルの下に蚊がいたら蚊を消す
         // 蚊を叩いたときにMosquitoHitイベントを流す
         stageManager.MouseClick
-            .Select(pos => Physics2D.OverlapPoint(pos))
+            .Select(p => Physics2D.OverlapPoint(p))
             .Where(collider => collider != null && collider.gameObject.tag == "Mosquito")
             .Subscribe(collider =>
             {
@@ -49,5 +50,6 @@ public class CursorBehaviour : MonoBehaviour
                 Destroy(collider.gameObject);
             })
             .AddTo(gameObject);
+
     }
 }
