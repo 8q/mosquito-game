@@ -26,16 +26,17 @@ public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
         var stageManager = StageManager.Instance;
 
         stageManager.MouseClick
-            .Select(p => Camera.main.WorldToViewportPoint(p))
-            .Where(p => p.x >= 0.0f && p.x <= 1.0f && p.y >= 0.0f && p.y <= 1.0f)
-            .Subscribe(p => ClickCount.Value++);
+            .Subscribe(p => ClickCount.Value++)
+            .AddTo(gameObject);
 
         stageManager.MosquitoHit
-            .Subscribe(_ => HitCount.Value++);
+            .Subscribe(_ => HitCount.Value++)
+            .AddTo(gameObject);
 
         Observable.Merge(ClickCount).Merge(HitCount)
             .Where(_ => ClickCount.Value > 0)
-            .Subscribe(_ => HitRate.Value = 100.0f * HitCount.Value / ClickCount.Value);
+            .Subscribe(_ => HitRate.Value = 100.0f * HitCount.Value / ClickCount.Value)
+            .AddTo(gameObject);
     }
 
 }

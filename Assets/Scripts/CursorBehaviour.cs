@@ -26,13 +26,17 @@ public class CursorBehaviour : MonoBehaviour
             })
             .AddTo(gameObject);
 
-        // 左クリックしたときにMouseClickイベントを流す
+        // 画面内を左クリックしたときにMouseClickイベントを流す
         this.UpdateAsObservable()
             .Where(_ => Input.GetMouseButtonDown(0))
-            .Subscribe(_ =>
+            .Select(_ => transform.position)
+            .Where(p =>
             {
-                stageManager.MouseClick.OnNext(transform.position);
-            });
+                var t = Camera.main.WorldToViewportPoint(p);
+                return t.x >= 0.0f && t.x <= 1.0f && t.y >= 0.0f && t.y <= 1.0f;
+            })
+            .Subscribe(p => stageManager.MouseClick.OnNext(p))
+            .AddTo(gameObject);
 
         // クリックしたときにカーソルの下に蚊がいたら蚊を消す
         // 蚊を叩いたときにMosquitoHitイベントを流す
