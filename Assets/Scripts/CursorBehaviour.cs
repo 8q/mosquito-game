@@ -13,9 +13,6 @@ public class CursorBehaviour : MonoBehaviour
         // StageManagerのインスタンス取得
         var stageManager = StageManager.Instance;
 
-        // デフォルトのカーソルを消す
-        Cursor.visible = false;
-
         // 疑似カーソルをマウスの位置に追従させる
         this.UpdateAsObservable()
             .Subscribe(_ =>
@@ -51,5 +48,9 @@ public class CursorBehaviour : MonoBehaviour
             })
             .AddTo(gameObject);
 
+        // インゲームのときだけカーソルを見えなくする
+        stageManager.StageState
+            .Subscribe(s => Cursor.visible = s != StageState.Playing)
+            .AddTo(gameObject);
     }
 }

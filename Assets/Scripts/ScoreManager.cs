@@ -53,4 +53,19 @@ public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
             .AddTo(gameObject);
     }
 
+    public float GetBaseScore()
+    {
+        return this.HitCount.Value * 1000;
+    }
+
+    public float GetMag()
+    {
+        return Mathf.Round(this.HitRate.Value * 10) / 1000.0f + 1.0f;
+    }
+
+    public float GetScore()
+    {
+        return Mathf.Floor(GetBaseScore() * GetMag());
+    }
+
 }
