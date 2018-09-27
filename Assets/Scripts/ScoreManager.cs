@@ -55,7 +55,7 @@ public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
 
     public float GetBaseScore()
     {
-        return this.HitCount.Value * 1000;
+        return this.HitCount.Value * 10000;
     }
 
     public float GetMag()

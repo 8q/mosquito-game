@@ -4,6 +4,7 @@ using UnityEngine;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ResultPanelBehaviour : MonoBehaviour
 {
@@ -48,8 +49,7 @@ public class ResultPanelBehaviour : MonoBehaviour
         titleButton.onClick.AsObservable()
             .Subscribe(_ =>
             {
-                // TODO: タイトルに戻る処理
-                Debug.Log("タイトルに戻る");
+                SceneManager.LoadScene("Title");
             })
             .AddTo(gameObject);
     }
