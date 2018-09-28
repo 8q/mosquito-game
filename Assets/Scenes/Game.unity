@@ -133,20 +133,19 @@ GameObject:
 --- !u!114 &102729912
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114035702500278724, guid: fbc32d093ff44f84686859c50d15008f,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 102729911}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad7b3e80a7447740b5f0dc9e782980b, type: 3}
+  m_Script: {fileID: 11500000, guid: 07789d11ebe7e7648a35915279db7c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mosquito: {fileID: 1920909667183218, guid: 24bc1c3fd4fad3c42b865f80a525ef65, type: 2}
   span:
-    min: 0.3
-    max: 1.3
-    minLimit: 0.01
+    min: 0
+    max: 1.5
+    minLimit: 0
     maxLimit: 2
     clampMin: 1
     clampMax: 1
@@ -1485,13 +1484,12 @@ GameObject:
 --- !u!114 &1124539653
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114109556949132396, guid: 32a4e0eaa6ccc1f44a55fbf69091fe77,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1124539652}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e54fac05834cd21428cce3ad001f7d8b, type: 3}
+  m_Script: {fileID: 11500000, guid: b0c1a28109ec71547b63f33eae9bcad1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   limitTime: 10

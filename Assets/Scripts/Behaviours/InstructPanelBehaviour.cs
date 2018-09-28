@@ -19,8 +19,7 @@ public class InstructPanelBehaviour : MonoBehaviour
         playButton.onClick.AsObservable()
             .Subscribe(_ =>
             {
-                gameObject.SetActive(false);
-                stageManager.StageState.Value = StageState.Playing;
+                stageManager.PlayStart.OnNext(Unit.Default);
             })
             .AddTo(gameObject);
 

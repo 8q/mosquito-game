@@ -19,7 +19,6 @@ public class ScorePanelBehaviour : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var stageManager = StageManager.Instance;
         var scoreManager = ScoreManager.Instance;
         var timerManager = TimerManager.Instance;
 
@@ -33,11 +32,6 @@ public class ScorePanelBehaviour : MonoBehaviour
 
         timerManager.Time
             .Subscribe(t => timerText.text = string.Format("のこり時間：{0}", t))
-            .AddTo(gameObject);
-
-        stageManager.StageState
-            .Where(s => s != StageState.Playing)
-            .Subscribe(s => gameObject.SetActive(false))
             .AddTo(gameObject);
     }
 }

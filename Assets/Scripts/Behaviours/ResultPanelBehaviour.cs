@@ -39,11 +39,7 @@ public class ResultPanelBehaviour : MonoBehaviour
             .AddTo(gameObject);
 
         restartButton.onClick.AsObservable()
-            .Subscribe(_ =>
-            {
-                gameObject.SetActive(false);
-                stageManager.StageState.Value = StageState.Initializing;
-            })
+            .Subscribe(_ => stageManager.ReStart.OnNext(Unit.Default))
             .AddTo(gameObject);
 
         titleButton.onClick.AsObservable()

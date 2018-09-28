@@ -42,13 +42,9 @@ public class TimerManager : SingletonMonoBehaviour<TimerManager>
             })
             .AddTo(gameObject);
 
-        // 時間0でリザルトにステートを変更
+        // 時間0でタイムアップイベントを流す
         Time.Where(t => t <= 0)
-            .Where(_ => stageManager.StageState.Value == StageState.Playing)
-            .Subscribe(_ =>
-            {
-                stageManager.StageState.Value = StageState.Result;
-            })
+            .Subscribe(_ => stageManager.TimeUp.OnNext(Unit.Default))
             .AddTo(gameObject);
     }
 
