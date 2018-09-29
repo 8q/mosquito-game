@@ -4,57 +4,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// シングルトンなMonoBehaviour.
-/// </summary>
-/// <typeparam name="T"></typeparam>
-public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
+namespace MosquitoGame.Utils
 {
-    private static T instance;
-    public static T Instance
+
+    /// <summary>
+    /// シングルトンなMonoBehaviour.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
     {
-        get
+        private static T instance;
+        public static T Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = (T)FindObjectOfType(typeof(T));
+                    if (instance == null)
+                    {
+                        Debug.LogError(typeof(T) + "をアタッチしているGameObjectはありません.");
+                    }
+                }
+                return instance;
+            }
+        }
+
+        protected virtual void Awake()
+        {
+            CheckInstance();
+        }
+
+        protected bool CheckInstance()
         {
             if (instance == null)
             {
-                instance = (T)FindObjectOfType(typeof(T));
-                if (instance == null)
-                {
-                    Debug.LogError(typeof(T) + "をアタッチしているGameObjectはありません.");
-                }
+                instance = (T)this;
+                return true;
             }
-            return instance;
+            else if (Instance == this)
+            {
+                return true;
+            }
+
+            Destroy(this);
+            Debug.LogError(
+                typeof(T) +
+                " は既に他のGameObjectにアタッチされているため、コンポーネントを破棄しました." +
+                " アタッチされているGameObjectは " + Instance.gameObject.name + " です.");
+
+            return false;
         }
-    }
 
-    protected virtual void Awake()
-    {
-        CheckInstance();
-    }
-
-    protected bool CheckInstance()
-    {
-        if (instance == null)
+        void OnDestroy()
         {
-            instance = (T)this;
-            return true;
+            instance = null;
         }
-        else if (Instance == this)
-        {
-            return true;
-        }
-
-        Destroy(this);
-        Debug.LogError(
-            typeof(T) +
-            " は既に他のGameObjectにアタッチされているため、コンポーネントを破棄しました." +
-            " アタッチされているGameObjectは " + Instance.gameObject.name + " です.");
-
-        return false;
     }
 
-    void OnDestroy()
-    {
-        instance = null;
-    }
 }
