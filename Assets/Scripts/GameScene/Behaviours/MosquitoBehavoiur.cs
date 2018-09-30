@@ -4,6 +4,7 @@ using UnityEngine;
 using UniRx;
 using UniRx.Triggers;
 using System.Linq;
+using MosquitoGame.Utils;
 
 namespace MosquitoGame.GameScene
 {
@@ -11,31 +12,29 @@ namespace MosquitoGame.GameScene
     {
 
         [SerializeField]
-        private float speed = 0.005f;
+        private float speed = 0.2f;
 
         void Start()
         {
             // ベジェ曲線用の点配列を用意
-            var points = GetRandomBezierCurveControlPoints4();
+            var points = GetRandomBezierCurveControlPoints();
 
             var spriteRenderer = GetComponent<SpriteRenderer>();
 
             // ベジェ曲線に沿って蚊を移動させる
             this.UpdateAsObservable()
-                .Select(_ => speed) // フレームあたりのtの変化量
+                .Select(_ => speed * Time.deltaTime) // フレームあたりのtの変化量
                 .Scan(0.0f, (acc, cur) => acc + cur)
                 .TakeWhile(t => t <= 1.0f) // tが1を超えた時点てonCompletedを流す
                 .Subscribe(t =>
                 {
-                    var targetPoint = Camera.main.ViewportToWorldPoint(GetBezierCurvePoint4(points[0], points[1], points[2], points[3], points[4], t));
-                    targetPoint.z = 0.0f;
+                    Vector2 targetPoint = Camera.main.ViewportToWorldPoint(BezierCurve.GetPoint4(points[0], points[1], points[2], points[3], points[4], t));
                     // 進行方向によってテクスチャを反転させる
                     spriteRenderer.flipX = targetPoint.x > transform.position.x;
                     transform.position = targetPoint;
                 }, () =>
                 {
-                    // onCompletedで蚊を消す
-                    Destroy(gameObject);
+                    Destroy(gameObject); // onCompletedで蚊を消す
                 })
                 .AddTo(gameObject);
 
@@ -59,29 +58,17 @@ namespace MosquitoGame.GameScene
         }
 
 
-        private Vector2[] GetRandomBezierCurveControlPoints3()
-        {
-            var points = new Vector2[4];
-            points[0] = new Vector2(-0.1f, Random.Range(-0.1f, 1.1f)); // 左
-            points[1] = new Vector2(Random.Range(-0.1f, 1.1f), 1.1f); // 上
-            points[2] = new Vector2(1.1f, Random.Range(-0.1f, 1.1f)); // 右
-            points[3] = new Vector2(Random.Range(-0.1f, 1.1f), -0.1f); // 下
-                                                                       // 配列をランダムソート
-            points = points.OrderBy(i => System.Guid.NewGuid()).ToArray();
-
-            return points;
-        }
-
-        private Vector2[] GetRandomBezierCurveControlPoints4()
+        // ベジェ曲線用のランダムな制御点の用意
+        private Vector2[] GetRandomBezierCurveControlPoints()
         {
             var points = new Vector2[5];
             points[0] = new Vector2(-0.1f, Random.Range(-0.1f, 1.1f)); // 左
             points[1] = new Vector2(Random.Range(-0.1f, 1.1f), 1.1f); // 上
             points[2] = new Vector2(1.1f, Random.Range(-0.1f, 1.1f)); // 右
             points[3] = new Vector2(Random.Range(-0.1f, 1.1f), -0.1f); // 下
-                                                                       // 5つ目の点は上下左右ランダム
-            int r = Random.Range(0, 4);
-            switch (r)
+
+            // 5つ目の点は上下左右ランダム
+            switch (Random.Range(0, 4))
             {
                 case 0:
                     points[4] = new Vector2(-0.1f, Random.Range(-0.1f, 1.1f)); // 左
@@ -102,25 +89,6 @@ namespace MosquitoGame.GameScene
             return points;
         }
 
-
-        private Vector2 GetBezierCurvePoint3(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
-        {
-            var oneMinusT = 1f - t;
-            return oneMinusT * oneMinusT * oneMinusT * p0 +
-                   3f * oneMinusT * oneMinusT * t * p1 +
-                   3f * oneMinusT * t * t * p2 +
-                   t * t * t * p3;
-        }
-
-        private Vector2 GetBezierCurvePoint4(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t)
-        {
-            var oneMinusT = 1f - t;
-            return oneMinusT * oneMinusT * oneMinusT * oneMinusT * p0 +
-                   4f * oneMinusT * oneMinusT * oneMinusT * t * p1 +
-                   6f * oneMinusT * oneMinusT * t * t * p2 +
-                   4f * oneMinusT * t * t * t * p3 +
-                   t * t * t * t * p4;
-        }
     }
 
 }
