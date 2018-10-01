@@ -38,6 +38,15 @@ namespace MosquitoGame.GameScene
                 })
                 .AddTo(gameObject);
 
+            // ランキングの更新
+            stageManager.StageState
+                .Where(s => s == StageState.Result)
+                .Subscribe(_ =>
+                {
+                    RankingPrefs.InsertScoreData(new ScoreData { Score = GetScore(), HitCount = HitCount.Value, HitRate = HitRate.Value });
+                })
+                .AddTo(gameObject);
+
             // マウスがクリックされたらクリックカウントを増やす
             eventManager.MouseClick
                 .Subscribe(p => ClickCount.Value++)

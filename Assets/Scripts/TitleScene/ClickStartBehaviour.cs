@@ -27,8 +27,10 @@ namespace MosquitoGame.TitleScene
                 .Where(_ => Input.GetMouseButton(0))
                 .Select(_ => Camera.main.ScreenToViewportPoint(Input.mousePosition))
                 .Where(p => p.x >= 0.0f && p.x <= 1.0f && p.y >= 0.0f && p.y <= 1.0f)
+                .Select(p => Camera.main.ViewportToScreenPoint(p))
+                .Where(p => !(p.x >= Screen.width - 150 && p.y <= 20)) // 「ランキングを見る」部分だけデッドゾーンにする（無理やり）
                 .Take(1)
-                .Subscribe(p =>
+                .Subscribe(_ =>
                 {
                     SceneManager.LoadScene("Game");
                 })
