@@ -17,12 +17,20 @@ namespace MosquitoGame.TitleScene
         // Use this for initialization
         void Start()
         {
-            StartCoroutine(MovePointCoroutine());
+            var spriteRenderer = GetComponent<SpriteRenderer>();
+
+            Observable.FromCoroutine<Vector2>(observer => MovePointCoroutine(observer))
+                .Subscribe(p =>
+                {
+                    Vector2 targetPoint = Camera.main.ViewportToWorldPoint(p);
+                    spriteRenderer.flipX = targetPoint.x > transform.position.x;
+                    transform.position = targetPoint;
+                })
+                .AddTo(gameObject);
         }
 
-        IEnumerator MovePointCoroutine()
+        IEnumerator MovePointCoroutine(IObserver<Vector2> observer)
         {
-            var spriteRenderer = GetComponent<SpriteRenderer>();
             var t = 0.0f;
 
             // 初期位置
@@ -30,9 +38,7 @@ namespace MosquitoGame.TitleScene
 
             while(true)
             {
-                Vector2 targetPoint = Camera.main.ViewportToWorldPoint(BezierCurve.GetPoint3(points[0], points[1], points[2], points[3], t));
-                spriteRenderer.flipX = targetPoint.x > transform.position.x;
-                transform.position = targetPoint;
+                observer.OnNext(BezierCurve.GetPoint3(points[0], points[1], points[2], points[3], t));
                 
                 yield return null;
 
