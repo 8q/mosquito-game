@@ -1,5 +1,5 @@
 # mosquito-game
-Unity製の蚊を倒すゲーム。UniRxで遊びたかった。
+Unity製の蚊を倒すゲーム。
 
 ## タイトル
 ![タイトル](img/title.png)
